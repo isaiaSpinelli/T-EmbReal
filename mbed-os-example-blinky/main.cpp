@@ -7,13 +7,14 @@
 
 
 // Blinking rate in milliseconds
-#define BLINKING_RATE     500ms
+#define BLINKING_RATE     2000ms
 
 
 void addOne_val(int i) {
   i++; // Has no effect outside this scope because this is a copy of the original
 }
 
+// Best -> I ne peut pas etre null !!
 void addOne_ref(int& i) {
   i++; // Actually changes the original variable
 }
@@ -35,12 +36,13 @@ int main()
         
   
         addOne_val(i);
-        printf("value of i is %d\n", i);
+        printf("1 value of i is %d\n", i);
+
 
         addOne_ref(i);
-        printf("value of i is %d\n", i);
+        printf("2 value of i is %d\n", i);
 
         addOne(&i);
-        printf("value of i is %d\n", i);
+        printf("3 value of i is %d\n", i);
     }
 }

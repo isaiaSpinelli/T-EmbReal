@@ -1,0 +1,13 @@
+mbed-os/components/*
+mbed-os/drivers/device_key/*
+mbed-os/drivers/source/usb/USBMSD.cpp
+mbed-os/drivers/source/SFDP.cpp
+mbed-os/connectivity/*
+mbed-os/features/FEATURE_BOOTLOADER/*
+mbed-os/features/frameworks/greentea-client/*
+mbed-os/features/frameworks/mbed-client-cli/*
+mbed-os/features/frameworks/mbed-client-randlib/*
+mbed-os/features/frameworks/unity/*
+mbed-os/features/frameworks/utest/*
+mbed-os/platform/randlib/*
+mbed-os/storage/*
