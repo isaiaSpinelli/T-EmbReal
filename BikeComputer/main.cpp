@@ -11,6 +11,6 @@ int main() {
   
   tr_info("Bike computer program started\n");
 
-  static_scheduling::BikeSystem bikeSystem;
+  StaticSchedulingWithEvent::BikeSystem bikeSystem;
   bikeSystem.start();
 }

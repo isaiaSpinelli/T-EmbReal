@@ -24,14 +24,14 @@ void BikeSystem::checkAndPerformReset(){
     // Si un reset a été détecté (sans callback)
     // OU avec le callback
     // resetDevice.checkReset() => oblige l'attente d'execution de la tache reset
-    if ( resetDevice.checkReset() || this->resetOn==true ){
+    if ( /* resetDevice.checkReset() ||*/ this->resetOn==true ){
         this->resetOn = false;
         
         wheelCounterDevice.reset();
 
         // end timer reset
         long long timeExecuteMS = (timer_reset.elapsed_time() - startReset).count()/1000;
-        tr_info("\n\nReset system ! (response time = %lld )\n\n", timeExecuteMS);
+        tr_info("\n\nReset system ! (response time = %lld [ms] )\n\n", timeExecuteMS);
     }
 }
 
@@ -41,9 +41,9 @@ void BikeSystem::controleTimeExecution(std::chrono::microseconds &startTime, Tim
     long long timeExecuteMS = (timer.elapsed_time() - startTime).count()/1000;
 
     if (timeExecuteMS != TimeTestMS){
-        tr_error("Error : Time execute of %s = %lld", task, timeExecuteMS );
+        tr_error("Error : Time execute of %s = %lld [ms]", task, timeExecuteMS );
     } else {
-        tr_debug("Time execute of %s = %lld", task, timeExecuteMS );
+        tr_debug("Time execute of %s = %lld [ms]", task, timeExecuteMS );
     }   
     
 }
@@ -130,6 +130,7 @@ void BikeSystem::start(){
 
 void BikeSystem::updateCurrentGear(){
      if ( this->gearOn==true ){
+        this->gearOn=false;
         m_currentGear = gearSystemDevice.getCurrentGear();
      }
     
