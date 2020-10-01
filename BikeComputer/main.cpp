@@ -2,11 +2,9 @@
 
 #include "mbed_trace.h"
 
-#if MBED_CONF_MBED_TRACE_ENABLE
-#define TRACE_GROUP "main"
-#endif // MBED_CONF_MBED_TRACE_ENABLE
 
 #include "StaticScheduling/BikeSystem.h"
+#include "StaticSchedulingWithEvent/BikeSystem.h"
 
 int main() {
   mbed_trace_init();

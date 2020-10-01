@@ -1,11 +1,38 @@
 #include "BikeSystem.h"
 #include <string>
 
-namespace static_scheduling {
+namespace StaticSchedulingWithEvent {
 
 
-BikeSystem::BikeSystem(){
+StaticSchedulingWithEvent::BikeSystem::BikeSystem() :
+    resetDevice(callback(this, &BikeSystem::setReset)), gearSystemDevice(callback(this, &BikeSystem::setGear)) {
 
+}
+
+void BikeSystem::setReset(){
+    this->resetOn=true;
+    // Start timer reset 
+    timer_reset.start();
+    startReset = timer_reset.elapsed_time();
+}
+
+void BikeSystem::setGear(){
+    this->gearOn=true;
+}
+
+void BikeSystem::checkAndPerformReset(){
+    // Si un reset a été détecté (sans callback)
+    // OU avec le callback
+    // resetDevice.checkReset() => oblige l'attente d'execution de la tache reset
+    if ( resetDevice.checkReset() || this->resetOn==true ){
+        this->resetOn = false;
+        
+        wheelCounterDevice.reset();
+
+        // end timer reset
+        long long timeExecuteMS = (timer_reset.elapsed_time() - startReset).count()/1000;
+        tr_info("\n\nReset system ! (response time = %lld )\n\n", timeExecuteMS);
+    }
 }
 
 // Controle le temps d'exécution
@@ -18,7 +45,6 @@ void BikeSystem::controleTimeExecution(std::chrono::microseconds &startTime, Tim
     } else {
         tr_debug("Time execute of %s = %lld", task, timeExecuteMS );
     }   
-
     
 }
 
@@ -103,19 +129,17 @@ void BikeSystem::start(){
 }
 
 void BikeSystem::updateCurrentGear(){
-    m_currentGear = gearSystemDevice.getCurrentGear();
+     if ( this->gearOn==true ){
+        m_currentGear = gearSystemDevice.getCurrentGear();
+     }
+    
 }
 
 void BikeSystem::updateWheelRotationCount(){
     m_currentWheelCounter = wheelCounterDevice.getCurrentRotationCount();
 }
 
-void BikeSystem::checkAndPerformReset(){
-    if ( resetDevice.checkReset() ){
-        tr_info("\n\nReset system !\n\n");
-        wheelCounterDevice.reset();
-    }
-}
+
 
 void BikeSystem::updateDisplay(int subTaskIndex){
 
