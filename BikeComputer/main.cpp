@@ -5,13 +5,14 @@
 
 #include "StaticScheduling/BikeSystem.h"
 #include "StaticSchedulingWithEvent/BikeSystem.h"
-#include "RTC/BikeSystem.h"
+#include "RTC/BikeSystem.h" 
+#include "EventQueue/BikeSystem.h" 
 
 int main() {
   mbed_trace_init();
   
   tr_info("Bike computer program started\n");
 
-  rtc::BikeSystem bikeSystem;
+  EventQueueNs::BikeSystem bikeSystem;
   bikeSystem.start();
 }

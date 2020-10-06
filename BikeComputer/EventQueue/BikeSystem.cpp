@@ -2,8 +2,9 @@
 
 #include <string>
 
+#include "mbed_events.h"
 
-namespace rtc {
+namespace EventQueueNs {
 
 BikeSystem::BikeSystem() :
     resetDevice(callback(this, &BikeSystem::setReset)), gearSystemDevice(callback(this, &BikeSystem::setGear)) {
@@ -54,48 +55,28 @@ void BikeSystem::controleTimeExecution(std::chrono::microseconds &startTime, Tim
 
 void BikeSystem::start(){
 
-    tr_info("Starting with RTC scheduler\n");
+    tr_info("Starting with EventQueue scheduler\n");
     std::chrono::microseconds startTime;
 
-  // start the timer
-  m_timer.start();
+    // creates a queue with the default size
+    events::EventQueue queue;
 
-  // Add the tasks by priority order.
-  // The task with the highest priority is the push reset task.
-  // This task is not periodic and made ready to run in the setResetTaskToReady() function.
-  m_taskInformationTable.addTask(this, &BikeSystem::checkAndPerformReset);
-  // The next task is the task for updating the gear.
-  // This task is not periodic and made ready to run in the setUpdateGearTaskToReady() function.
-  m_taskInformationTable.addTask(this, &BikeSystem::updateCurrentGear);
-  // the task with the next priority is the one for updating the current rotation count (periodic task)
-  m_taskInformationTable.addTask(this, &BikeSystem::updateWheelRotationCount, WheelCounterDevice::TASK_PERIOD);  
-  // the task with the next priority is the one for updating the LCD display (period task)
-  m_taskInformationTable.addTask(this, &BikeSystem::updateDisplay, LCDDisplay::TASK_PERIOD);    
-  
-  int nbrOfTasks = m_taskInformationTable.getNbrOfTasks();
-  printf("Nbr of tasks in scheduler is %d\n", nbrOfTasks);
+    // start the timer
+    m_timer.start();
+    startTime = m_timer.elapsed_time();
 
-  // run a RTC scheduling  
-  while (true) {
-    // wait for a task to be ready to run
-    m_taskInformationTable.waitForTaskReadyToRun();
+
+    queue.call_every( 100ms, this, &BikeSystem::updateWheelRotationCount );
+    queue.call_every( 250ms, this, &BikeSystem::updateDisplay);
+
+    //queue.event(this, &BikeSystem::updateCurrentGear);
+    //queue.event(this, &BikeSystem::checkAndPerformReset);
+
+    queue.call_every( 100ms, this, &BikeSystem::updateCurrentGear );
+    queue.call_every( 100ms, this, &BikeSystem::checkAndPerformReset );
     
-    // tasks are ordered by priority
-    // run the first ready to run task by priority order
-    for (int taskIndex = 0; taskIndex < nbrOfTasks; taskIndex++) {
-      if (m_taskInformationTable.isReadyToRun(taskIndex)) {
-        // run the task
-        // Recupère le temps avant le lancement de la tâche
-        startTime = m_timer.elapsed_time();
-        m_taskInformationTable.execute(taskIndex);
-        // note that the task ready to run status is reset after execution
-        char buffer [50];
-        sprintf (buffer, "task %d",taskIndex);
-        controleTimeExecution(startTime, m_timer, m_taskInformationTable.getPeriodTask_us(taskIndex).count()/1000, (char*)buffer);
-        break;
-      }
-    }
-  }
+
+    queue.dispatch();
 
 }
 
@@ -112,11 +93,11 @@ void BikeSystem::updateWheelRotationCount(){
 }
 
 
-
+/* 
 void BikeSystem::updateDisplay(int subTaskIndex){
 
     lcdDisplay.show( m_currentGear, m_currentWheelCounter, subTaskIndex);
-}
+}*/
 
 void BikeSystem::updateDisplay(){
 
