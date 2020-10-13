@@ -4,6 +4,10 @@
 
 #include "mbed_events.h"
 
+#define USE_SECOND_THREAD 
+
+
+
 namespace EventQueueNs {
 
 BikeSystem::BikeSystem() :
@@ -56,27 +60,51 @@ void BikeSystem::controleTimeExecution(std::chrono::microseconds &startTime, Tim
 void BikeSystem::start(){
 
     tr_info("Starting with EventQueue scheduler\n");
-    std::chrono::microseconds startTime;
 
-    // creates a queue with the default size
-    events::EventQueue queue;
+    #ifdef USE_SECOND_THREAD
 
-    // start the timer
-    m_timer.start();
-    startTime = m_timer.elapsed_time();
+        events::EventQueue queue_periodic;
+
+        Thread thread_no_P(osPriorityAboveNormal5) ; // osPriorityBelowNormal
+
+        thread_no_P.start(callback(this, &BikeSystem::queueNoP ));
+        // thread_no_P.set_priority(osPriorityBelowNormal2);
+
+        queue_periodic.call_every( 100ms, this, &BikeSystem::updateWheelRotationCount );
+        queue_periodic.call_every( 250ms, this, &BikeSystem::updateDisplay);
+
+        queue_periodic.dispatch();
 
 
-    queue.call_every( 100ms, this, &BikeSystem::updateWheelRotationCount );
-    queue.call_every( 250ms, this, &BikeSystem::updateDisplay);
+    #else
 
-    //queue.event(this, &BikeSystem::updateCurrentGear);
-    //queue.event(this, &BikeSystem::checkAndPerformReset);
+        std::chrono::microseconds startTime;
 
-    queue.call_every( 100ms, this, &BikeSystem::updateCurrentGear );
-    queue.call_every( 100ms, this, &BikeSystem::checkAndPerformReset );
-    
+        // creates a queue with the default size
+        events::EventQueue queue;
 
-    queue.dispatch();
+        // start the timer
+        m_timer.start();
+        startTime = m_timer.elapsed_time();
+
+
+        queue.call_every( 100ms, this, &BikeSystem::updateWheelRotationCount );
+        queue.call_every( 250ms, this, &BikeSystem::updateDisplay);
+
+        //queue.event(this, &BikeSystem::updateCurrentGear);
+        //queue.event(this, &BikeSystem::checkAndPerformReset);
+
+        queue.call_every( 100ms, this, &BikeSystem::updateCurrentGear );
+        queue.call_every( 100ms, this, &BikeSystem::checkAndPerformReset );
+        
+
+        queue.dispatch();
+        
+    #endif
+
+
+
+   
 
 }
 
@@ -104,6 +132,16 @@ void BikeSystem::updateDisplay(){
     lcdDisplay.show( m_currentGear, m_currentWheelCounter);
 }
 
+void BikeSystem::queueNoP(){
+
+    events::EventQueue queue_no_periodic;
+
+    queue_no_periodic.call_every( 100ms, this, &BikeSystem::updateCurrentGear );
+    queue_no_periodic.call_every( 100ms, this, &BikeSystem::checkAndPerformReset );
+
+    queue_no_periodic.dispatch();
+    
+}
 
 
 } // namespace

@@ -26,6 +26,9 @@ public:
   void start();
   
 private:
+
+  void queueNoP();
+
   void updateCurrentGear();
   void updateWheelRotationCount();
   void checkAndPerformReset();
