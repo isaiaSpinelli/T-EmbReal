@@ -8,7 +8,8 @@ const std::chrono::milliseconds WheelCounterDevice::WHEELING_RATE = 50ms;
 // the time that the task will actually take
 const std::chrono::microseconds WheelCounterDevice::TASK_RUN_TIME = 100000us;
 // the perdio time of the task
-const std::chrono::microseconds WheelCounterDevice::TASK_PERIOD = 100000us;
+const std::chrono::milliseconds WheelCounterDevice::TASK_PERIOD = 400ms;
+//const std::chrono::microseconds WheelCounterDevice::TASK_PERIOD = 100000us;
 
 
 WheelCounterDevice::WheelCounterDevice() :

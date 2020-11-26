@@ -13,7 +13,7 @@ namespace EventQueueNs {
 // the time that the task will actually take
 const std::chrono::microseconds LCDDisplay::TASK_RUN_TIME = 250000us;
 // the perdio time of the task
-const std::chrono::microseconds LCDDisplay::TASK_PERIOD = 250000us;
+const std::chrono::milliseconds LCDDisplay::TASK_PERIOD = 900ms;
 
 LCDDisplay::LCDDisplay(){
 

@@ -12,7 +12,7 @@ class LCDDisplay {
     void show(int currentGear, int currentRotationCount,              
               int subTaskIndex = -1);
 
-    static const std::chrono::microseconds TASK_PERIOD; 
+  static const std::chrono::milliseconds TASK_PERIOD; 
 
   private:
 

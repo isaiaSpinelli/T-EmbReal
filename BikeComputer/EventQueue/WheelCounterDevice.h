@@ -14,7 +14,7 @@ class WheelCounterDevice {
     // method called for resetting the counter
     void reset();
   
-  static const std::chrono::microseconds TASK_PERIOD; 
+  static const std::chrono::milliseconds TASK_PERIOD; 
   
   private:
 

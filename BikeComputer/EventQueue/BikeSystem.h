@@ -14,6 +14,7 @@
 #define TRACE_GROUP "BikeSystem"
 #endif // MBED_CONF_MBED_TRACE_ENABLE
 
+//#define USE_SECOND_THREAD 
 
 namespace EventQueueNs {
 
@@ -26,6 +27,16 @@ public:
   void start();
   
 private:
+
+
+#if defined(MBED_ALL_STATS_ENABLED)
+  static const int MAX_THREAD_INFO = 10;
+  mbed_stats_heap_t m_heap_info = {0};  
+  mbed_stats_stack_t m_stack_info[MAX_THREAD_INFO] = {0};
+  void getAndPrintStatistics();
+  void printDiffs();
+#endif
+
 
   void queueNoP();
 
@@ -59,7 +70,13 @@ private:
 
 
   Timer m_timer;
-  rtc::TaskInformationTable m_taskInformationTable;
+
+  EventQueue m_eventQueue;
+
+#if defined(USE_SECOND_THREAD)
+  // used in ISRs for deferring event handling job to the queue
+  EventQueue queue_periodic;
+#endif
   
 
   

@@ -35,11 +35,9 @@
       "trace-level": "TRACE_LEVEL_DEBUG"      
     },
     "DISCO_L475VG_IOT01A": {
-      "target.app_offset" : "0x10000",
+      "target.restrict_size": "0x10000",
       "mbed-trace.enable": true,
-      "trace-level": "TRACE_LEVEL_DEBUG",     
-      "target.bootloader_img":"../first_bootloader/BUILD/DISCO_L475VG_IOT01A/ARMC6/first_bootloader.bin"
- 
+      "trace-level": "TRACE_LEVEL_DEBUG" 
     }
   }
 }
