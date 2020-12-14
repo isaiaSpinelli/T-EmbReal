@@ -24,7 +24,7 @@ private:
   static const std::chrono::microseconds TASK_RUN_TIME;
 
   // data members
-  USBSerial m_usbSerial;
+  //USBSerial m_usbSerial;
 
   Callback<void()> cb;
 

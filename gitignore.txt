@@ -1,0 +1,34 @@
+2x remplace in .mbedignore :
+
+mbed-os/connectivity/*
+
+
+by
+
+
+mbed-os/connectivity/cellular/*
+mbed-os/connectivity/drivers/*
+mbed-os/connectivity/FEATURE_BLE/*
+mbed-os/connectivity/libraries/*
+mbed-os/connectivity/lorawan/*
+mbed-os/connectivity/lwipstack/*
+mbed-os/connectivity/nanostack/*
+mbed-os/connectivity/netsocket/*
+mbed-os/connectivity/nfc/*
+
+
+
+in bootload add in .mbedignore :
+
+UpdateClient/USBSerialUC.cpp
+
+
+Update mbed_app.json :
+
+"target.app_offset": "0x40000" -> "target.header_offset": "0x40000",
+
+
+
+Create sym Link dir :
+
+mklink /J <LienDir> <existeDir>

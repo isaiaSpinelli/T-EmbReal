@@ -1,0 +1,50 @@
+{
+  "macros": [
+      "MBEDTLS_USER_CONFIG_FILE=\"bootloader_mbedtls_user_config.h\"",
+    "MBED_CONF_MBED_TRACE_FEA_IPV6=0",
+    "MBED_BOOTLOADER_FLASH_BANK_SIZE=MBED_ROM_SIZE/2"
+],
+  "config": {
+    "main-stack-size": {
+     "value": 8192
+    },
+    "trace-level": {
+      "help": "Options are TRACE_LEVEL_ERROR,TRACE_LEVEL_WARN,TRACE_LEVEL_INFO,TRACE_LEVEL_DEBUG",
+      "macro_name": "MBED_TRACE_MAX_LEVEL",
+      "value": "TRACE_LEVEL_INFO"
+    }
+  },
+  "target_overrides": {
+    "*": {  
+      "platform.all-stats-enabled": true,
+      "target.printf_lib": "minimal-printf", 
+      "mbed-trace.enable": false,
+      "platform.stdio-convert-newlines": true,
+      "platform.stdio-baud-rate": 115200,
+      "platform.default-serial-baud-rate": 115200,
+      "platform.stdio-buffered-serial": true,
+      "update-client.storage-address": "(MBED_ROM_START + MBED_BOOTLOADER_FLASH_BANK_SIZE)",
+        "update-client.storage-size": "(MBED_BOOTLOADER_FLASH_BANK_SIZE)",
+        "update-client.storage-locations": 2
+    },
+    "EP_AGORA": {
+      "mbed-trace.enable": true,
+      "trace-level": "TRACE_LEVEL_DEBUG"
+    },
+    "UBLOX_C030_R412M": {
+      "mbed-trace.enable": true,
+      "trace-level": "TRACE_LEVEL_DEBUG"
+    },
+    "NRF52840_DK": {
+      "mbed-trace.enable": true,
+      "trace-level": "TRACE_LEVEL_DEBUG"      
+    },
+    "DISCO_L475VG_IOT01A": {
+      "target.header_offset": "0x40000",
+      "mbed-trace.enable": true,
+      "trace-level": "TRACE_LEVEL_DEBUG",     
+      "target.bootloader_img":"../first_bootloader/BUILD/DISCO_L475VG_IOT01A/ARMC6/first_bootloader.bin"
+ 
+    }
+  }
+}

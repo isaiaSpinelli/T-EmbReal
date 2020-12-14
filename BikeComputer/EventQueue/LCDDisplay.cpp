@@ -31,7 +31,7 @@ void LCDDisplay::show(int currentGear, int currentRotationCount, int subTaskInde
     switch(subTaskIndex){
         case 1:
             wait_us( (TASK_RUN_TIME.count() / 3) );
-            printf("LCD Display show :\n");
+            printf("LCD Display show 2 :\n");
             break;
         case 2:
             wait_us( (TASK_RUN_TIME.count() / 3) );
@@ -44,7 +44,7 @@ void LCDDisplay::show(int currentGear, int currentRotationCount, int subTaskInde
 
         case -1:
             wait_us( TASK_RUN_TIME.count() );
-            printf("LCD Display show : \tCurrent gear = %d \tCurrent rotation count = %d\n",currentGear , currentRotationCount);
+            printf("23 LCD Display show : \tCurrent gear = %d \tCurrent rotation count = %d\n",currentGear , currentRotationCount);
             break;
 
         default:

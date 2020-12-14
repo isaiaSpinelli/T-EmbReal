@@ -1,6 +1,8 @@
 {
   "macros": [
-    "MBED_CONF_MBED_TRACE_FEA_IPV6=0"
+      "MBEDTLS_USER_CONFIG_FILE=\"bootloader_mbedtls_user_config.h\"",
+    "MBED_CONF_MBED_TRACE_FEA_IPV6=0",
+    "MBED_BOOTLOADER_FLASH_BANK_SIZE=MBED_ROM_SIZE/2"
   ],
   "config": {
     "main-stack-size": {
@@ -20,7 +22,10 @@
       "platform.stdio-convert-newlines": true,
       "platform.stdio-baud-rate": 115200,
       "platform.default-serial-baud-rate": 115200,
-      "platform.stdio-buffered-serial": true
+      "platform.stdio-buffered-serial": true,
+      "update-client.storage-address": "(MBED_ROM_START + MBED_BOOTLOADER_FLASH_BANK_SIZE)",
+        "update-client.storage-size": "(MBED_BOOTLOADER_FLASH_BANK_SIZE)",
+        "update-client.storage-locations": 2
     },
     "EP_AGORA": {
       "mbed-trace.enable": true,
@@ -35,7 +40,7 @@
       "trace-level": "TRACE_LEVEL_DEBUG"      
     },
     "DISCO_L475VG_IOT01A": {
-      "target.restrict_size": "0x10000",
+      "target.restrict_size": "0x40000",
       "mbed-trace.enable": true,
       "trace-level": "TRACE_LEVEL_DEBUG" 
     }

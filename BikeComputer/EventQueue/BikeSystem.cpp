@@ -95,7 +95,7 @@ void BikeSystem::start(){
     m_eventQueue.call_every( LCDDisplay::TASK_PERIOD, this, &BikeSystem::updateDisplay);
 
 
-    m_eventQueue.call_every( 1s, this, &BikeSystem::getAndPrintStatistics);
+    //m_eventQueue.call_every( 1s, this, &BikeSystem::getAndPrintStatistics);
 
 
     m_eventQueue.dispatch_forever();
