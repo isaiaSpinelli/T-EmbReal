@@ -54,14 +54,16 @@ void BikeSystem::start() {
   // start the lcd display
   m_lcdDisplay.start();
   
-  // start the thread responsible for running deferred ISRs
   
   // start the processing thread
   m_processingThread.start(callback(this, &BikeSystem::processData));
 
   tr_debug("Bike system started\n");
+  
+  // Print stack and heap info
+  BikeSystem::getAndPrintStatistics();
 
-  //m_eventQueue.call_every( 1s, this, &BikeSystem::getAndPrintStatistics);
+  // start the thread responsible for running deferred ISRs
 
   // dispatch event on the ISR queue forever
   m_eventQueueForISRs.dispatch_forever();

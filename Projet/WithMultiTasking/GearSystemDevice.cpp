@@ -2,22 +2,23 @@
 
 namespace with_multitasking {
   
-GearSystemDevice::GearSystemDevice(mbed::Callback<void()> cb) :
-  m_usbSerial(true) {
+GearSystemDevice::GearSystemDevice(mbed::Callback<void()> cb) /*:
+  m_usbSerial(true)*/ {
   
   // attach the callback to the serial port
-  m_usbSerial.attach(cb);
+  //m_usbSerial.attach(cb);
 }
 
 int GearSystemDevice::getCurrentGear() {
   // when a callback is registered, we need to read data
   // on the serial port upon getting the current gear
-  while (m_usbSerial.available()) {
+  //while (m_usbSerial.available()) {
     // printf("Got character %c\n", m_usbSerial.getc());
-    char str[2] = { (char) m_usbSerial.getc(), 0};
-    m_currentGear = atoi(str);
-  }
+    //char str[2] = { (char) m_usbSerial.getc(), 0};
+    //m_currentGear = atoi(str);
+  //}
 
+    m_currentGear = 2;
   return m_currentGear;
 }
 

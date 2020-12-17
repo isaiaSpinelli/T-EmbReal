@@ -21,7 +21,7 @@ void LCDDisplay::displayInfo() {
     float speed = pProcessedData->averageSpeed;
     float power = pProcessedData->averagePower;
     //printf("Average speed is %d.%d\n", (int) speed, (int) ((speed - (int) speed) * 100000));
-    printf("Average speed is %f with power %f\n", speed, power);
+    printf("03 Average speed is %f with power %f\n", speed, power);
     m_processedMail.free(pProcessedData);    
   }
 }

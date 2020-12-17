@@ -16,15 +16,16 @@
 int main() {
     mbed_trace_init();
 
-    // Lancement du thread en arrière plan 
+    // Lancement du thread (màj depuis USB) en arrière plan 
     update_client::USBSerialUC usbSerialUC;
     Thread m_thread ;
     m_thread.start(callback(&usbSerialUC, &update_client::USBSerialUC::start))  ;
 
   
-    tr_info("Bike computer program started 7 \n");
-    //with_event_queue::BikeSystem bikeSystem;
-    //bikeSystem.start();
+
+    // Lancement de l'application principal
+    tr_info("\r\n----- Bike computer program started -----\r\n");
+
     with_multitasking::BikeSystem bikeSystem;
     bikeSystem.start();
 }

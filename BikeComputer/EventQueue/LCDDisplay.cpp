@@ -44,7 +44,7 @@ void LCDDisplay::show(int currentGear, int currentRotationCount, int subTaskInde
 
         case -1:
             wait_us( TASK_RUN_TIME.count() );
-            printf("23 LCD Display show : \tCurrent gear = %d \tCurrent rotation count = %d\n",currentGear , currentRotationCount);
+            printf("78 LCD Display show : \tCurrent gear = %d \tCurrent rotation count = %d\n",currentGear , currentRotationCount);
             break;
 
         default:

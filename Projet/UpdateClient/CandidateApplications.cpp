@@ -180,11 +180,12 @@ int32_t CandidateApplications::installApplication(uint32_t slotIndex, uint32_t d
 
 
     // ---- WRITE THE READ PAGE TO ACTIVE APP (from writePageBuffer)-----
-    uint32_t addr_2 = destAddr ;
+    uint32_t addr_2 = destAddr  + nbrOfBytes;
     //bool sectorErased = true;
     //size_t pagesFlashed = 0;
-    uint32_t nextSectorAddress;
-    result = m_flashUpdater.writePage(pageSize, writePageBuffer.get(), readPageBuffer.get(), addr_2, destSectorErased , destPagesFlashed, nextSectorAddress);
+    //uint32_t nextSectorAddress;
+    result = m_flashUpdater.writePage(pageSize, writePageBuffer.get(), readPageBuffer.get(), 
+                                    addr_2, destSectorErased , destPagesFlashed, nextDestSectorAddress);
     if (result != UC_ERR_NONE) {
         tr_error("Cannot write candidate application to active app\r\n");
         break;       
@@ -203,4 +204,24 @@ int32_t CandidateApplications::installApplication(uint32_t slotIndex, uint32_t d
   return UC_ERR_NONE;
 }
 #endif
+
+
+
+
+
+
+
+bool CandidateApplications::hasValidCandidate(uint32_t& slotIndexValid) const {
+
+  for (uint32_t slotIndex = 0; slotIndex < m_nbrOfSlots; slotIndex++) {    
+
+    if (m_candidateApplicationArray[slotIndex]->isValid()) {
+        slotIndexValid =  slotIndex;
+        return true;
+    }
+
+  }
+  return false;
+}
+
 } // namespace
