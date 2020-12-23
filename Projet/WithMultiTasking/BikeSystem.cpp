@@ -6,8 +6,6 @@
 #define TRACE_GROUP "BikeSystem"
 #endif // MBED_CONF_MBED_TRACE_ENABLE
 
-// TODO : printRuntimeMemoryMap : 1. stack isr not defined 2. applicaion_unnamed 2x
-
 namespace with_multitasking {
   
 BikeSystem::BikeSystem() :
@@ -142,7 +140,7 @@ void BikeSystem::processData() {
 // others stack info    : mbed-os/cmsis/device/rtos/mbed_lib.json
 void BikeSystem::getAndPrintStatistics() {
 
-    printRuntimeMemoryMap();
+    //printRuntimeMemoryMap();
     
     mbed_stats_heap_get(&m_heap_info);
     tr_debug("MemoryStats (Heap):");
@@ -171,7 +169,7 @@ void BikeSystem::getAndPrintStatistics() {
       if (m_stack_info[i].thread_id != 0) {
         tr_debug("\tThread: %d", i);
         tr_debug("\t\tThread Id: 0x%08X with name %s", m_stack_info[i].thread_id, osThreadGetName((osThreadId_t) m_stack_info[i].thread_id));
-        tr_debug("\t\tMaximum number of bytes used on the stack: %d",  m_stack_info[i].max_size);     
+        tr_debug("\t\tMaximum number of bytes used on the stack: %d / %d",  m_stack_info[i].max_size, osThreadGetStackSize((osThreadId_t) m_stack_info[i].thread_id));     
         tr_debug("\t\tCurrent number of bytes allocated for the stack: %d",  m_stack_info[i].reserved_size);    
         tr_debug("\t\tNumber of stacks stats accumulated in the structure: %d",  m_stack_info[i].stack_cnt);           
       }
@@ -230,7 +228,6 @@ void BikeSystem::printDiffs() {
   }
 }
 
-// TODO : à voir pourquoi mbed_stack_isr_start n'est pas reconnu
 void BikeSystem::printRuntimeMemoryMap(void) {
   // defined in rtx_thread.c
   // uint32_t osThreadEnumerate (osThreadId_t *thread_array, uint32_t array_items)
@@ -253,7 +250,6 @@ void BikeSystem::printRuntimeMemoryMap(void) {
   uint32_t mbed_heap_size = (uint32_t)HEAP_SIZE;
 
   tr_debug("\t mbed_heap_start: %p, mbed_heap_end: %p, size: %u", HEAP_START, (void*)(mbed_heap_start + mbed_heap_size), mbed_heap_size);
-  //tr_debug("\t mbed_stack_isr_start: %p, mbed_stack_isr_end: %p, size: %u", mbed_stack_isr_start, (mbed_stack_isr_start + mbed_stack_isr_size), mbed_stack_isr_size);
 }
 
 #endif
