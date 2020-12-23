@@ -10,13 +10,33 @@ namespace with_multitasking {
   
 BikeSystem::BikeSystem() :
   m_processingThread(osPriorityNormal, OS_STACK_SIZE, nullptr, "ProcessingThread"),
-  m_resetDevice(callback(this, &BikeSystem::setReset)),
+  m_buttonDevice(callback(this, &BikeSystem::buttonFall), callback(this, &BikeSystem::buttonRise) ),
   m_gearSystemDevice(callback(this, &BikeSystem::setNewGear)),
   m_wheelCounterDevice(m_countQueue),
   m_lcdDisplay(m_processedMail) {
 }
 
-void BikeSystem::setReset() {  
+void BikeSystem::buttonFall() {  
+    m_timeButtonFall = m_timer.elapsed_time();
+}
+void BikeSystem::buttonRise() {  
+    m_timeButtonRise = m_timer.elapsed_time();
+
+    m_eventQueueForISRs.call(mbed::callback(this, &BikeSystem::displayTimeButton));
+}
+void BikeSystem::displayTimeButton() {
+    int timePushButton = ((m_timeButtonRise.count() - m_timeButtonFall.count())/1000);
+    tr_debug("Button (event): push time is %d msecs", timePushButton ); 
+    if (timePushButton < 1000){
+        // m_sensorHub.getMeasure();
+    } else {
+        // Print stack and heap info
+        //BikeSystem::getAndPrintStatistics();
+        BikeSystem::printDiffs();
+    }
+ }
+
+/*void BikeSystem::setReset() {  
   m_resetTime = m_timer.elapsed_time();
   // defer the job to the event queue
   m_eventQueueForISRs.call(mbed::callback(this, &BikeSystem::performReset));
@@ -27,7 +47,7 @@ void BikeSystem::performReset() {
   tr_debug("Reset task (event): response time is %d usecs", (int) (currentTime.count() - m_resetTime.count())); 
  
   core_util_atomic_store_u32(&m_totalRotationCount, 0);
-}
+}*/
 
 void BikeSystem::setNewGear() {
   // defer the job to the event queue

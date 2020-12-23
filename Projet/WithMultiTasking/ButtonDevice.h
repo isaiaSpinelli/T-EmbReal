@@ -4,10 +4,10 @@
 
 namespace with_multitasking {
 
-class ResetDevice {
+class ButtonDevice {
 public:
   // constructor used for event-driven behavior
-  ResetDevice(mbed::Callback<void()> cb);
+  ButtonDevice(mbed::Callback<void()> cb_fall, mbed::Callback<void()> cb_rise);
 
 private:
   // data members  

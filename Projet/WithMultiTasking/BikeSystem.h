@@ -2,7 +2,7 @@
 
 #include "GearSystemDevice.h"
 #include "WheelCounterDevice.h"
-#include "ResetDevice.h"
+#include "ButtonDevice.h"
 #include "LCDDisplay.h"
 #include "ProcessedData.h"
 
@@ -16,6 +16,10 @@ public:
 
 private:
   // private methods
+  void buttonFall();
+  void buttonRise();
+  void displayTimeButton();
+
   void setReset();
   void performReset();
   void setNewGear();
@@ -26,7 +30,7 @@ private:
   // data member that represents the device for counting wheel rotations  
   WheelCounterDevice m_wheelCounterDevice;
   // data member that represents the device used for resetting
-  ResetDevice m_resetDevice;
+  ButtonDevice m_buttonDevice;
   // data member that represents the device display
   LCDDisplay m_lcdDisplay;
   
@@ -41,7 +45,8 @@ private:
   EventQueue m_eventQueueForISRs;
   void processData();
   Timer m_timer;
-  std::chrono::microseconds m_resetTime;
+  std::chrono::microseconds m_timeButtonFall;
+  std::chrono::microseconds m_timeButtonRise;
 
 #if defined(MBED_ALL_STATS_ENABLED)
   static const int MAX_THREAD_INFO = 10;

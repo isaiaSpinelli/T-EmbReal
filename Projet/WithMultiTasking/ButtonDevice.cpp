@@ -1,4 +1,4 @@
-#include "ResetDevice.h"
+#include "ButtonDevice.h"
 
 #if defined(TARGET_DISCO_L475VG_IOT01A) 
 #define PUSH_BUTTON USER_BUTTON
@@ -10,9 +10,10 @@
 
 namespace with_multitasking {
   
-ResetDevice::ResetDevice(mbed::Callback<void()> cb) :
+ButtonDevice::ButtonDevice(mbed::Callback<void()> cb_fall, mbed::Callback<void()> cb_rise) :
   m_resetButton(PUSH_BUTTON) {
-  m_resetButton.fall(cb);
+  m_resetButton.fall(cb_fall);
+  m_resetButton.rise(cb_rise);
 }
 
 } // namespace
