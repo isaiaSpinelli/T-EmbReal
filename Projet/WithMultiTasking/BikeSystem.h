@@ -54,6 +54,7 @@ private:
   mbed_stats_stack_t m_stack_info[MAX_THREAD_INFO] = {0};
   void getAndPrintStatistics();
   void printDiffs();
+  void printRuntimeMemoryMap();
 #endif
 
 };

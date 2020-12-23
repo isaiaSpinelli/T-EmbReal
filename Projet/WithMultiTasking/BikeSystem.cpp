@@ -1,10 +1,12 @@
 #include "BikeSystem.h"
+#include <cstdint>
 	
 #if MBED_CONF_MBED_TRACE_ENABLE
 #include "mbed_trace.h"
 #define TRACE_GROUP "BikeSystem"
 #endif // MBED_CONF_MBED_TRACE_ENABLE
 
+// TODO : printRuntimeMemoryMap : 1. stack isr not defined 2. applicaion_unnamed 2x
 
 namespace with_multitasking {
   
@@ -31,7 +33,6 @@ void BikeSystem::displayTimeButton() {
         // m_sensorHub.getMeasure();
     } else {
         // Print stack and heap info
-        //BikeSystem::getAndPrintStatistics();
         BikeSystem::printDiffs();
     }
  }
@@ -82,6 +83,7 @@ void BikeSystem::start() {
   
   // Print stack and heap info
   BikeSystem::getAndPrintStatistics();
+
 
   // start the thread responsible for running deferred ISRs
 
@@ -140,10 +142,10 @@ void BikeSystem::processData() {
 // others stack info    : mbed-os/cmsis/device/rtos/mbed_lib.json
 void BikeSystem::getAndPrintStatistics() {
 
-    printDiffs();
+    printRuntimeMemoryMap();
     
     mbed_stats_heap_get(&m_heap_info);
-    tr_debug("\tHEAP ! ");
+    tr_debug("MemoryStats (Heap):");
 
     tr_debug("\tBytes allocated currently: %d ", m_heap_info.current_size);
     tr_debug("\tMax bytes allocated at a given time: %d ", m_heap_info.max_size);
@@ -155,7 +157,7 @@ void BikeSystem::getAndPrintStatistics() {
 
     mbed_stats_stack_t global_stack_info = {0};
     mbed_stats_stack_get(&global_stack_info);
-    tr_debug("\tSTACK ! ");
+    tr_debug("Cumulative Stack Info:");
     tr_debug("\tid: %d ", global_stack_info.thread_id);
     tr_debug("\tMaximum number of bytes used on the stack: %d ", global_stack_info.max_size);
     tr_debug("\tCurrent number of bytes allocated for the stack: %d ", global_stack_info.reserved_size);
@@ -226,6 +228,32 @@ void BikeSystem::printDiffs() {
       }
     }    
   }
+}
+
+// TODO : à voir pourquoi mbed_stack_isr_start n'est pas reconnu
+void BikeSystem::printRuntimeMemoryMap(void) {
+  // defined in rtx_thread.c
+  // uint32_t osThreadEnumerate (osThreadId_t *thread_array, uint32_t array_items)
+  tr_debug("Runtime Memory Map:");
+  osThreadId_t threadIdArray[MAX_THREAD_INFO] = {0};
+  uint32_t nbrOfThreads = osThreadEnumerate(threadIdArray, MAX_THREAD_INFO);
+  for (uint32_t threadIndex = 0; threadIndex < nbrOfThreads; threadIndex++) {
+        osRtxThread_t* pThreadCB = (osRtxThread_t*) threadIdArray[threadIndex];
+        uint8_t state = pThreadCB->state & osRtxThreadStateMask;
+        const char* szThreadState = (state & osThreadInactive) ? "Inactive" : (state & osThreadReady) ? "Ready" :
+          (state & osThreadRunning) ? "Running" : (state & osThreadBlocked) ? "Blocked" : (state & osThreadTerminated) ? "Terminated" : "Unknown";
+         tr_debug("\t thread with name %s, stack_start: %p, stack_end: %p, size: %u, priority: %d, state: %s",
+                  pThreadCB->name, pThreadCB->stack_mem,
+                  (char*) pThreadCB->stack_mem + pThreadCB->stack_size,
+                  pThreadCB->stack_size,
+                  pThreadCB->priority,
+                  szThreadState);
+  }
+  uint32_t mbed_heap_start = (uint32_t)HEAP_START;
+  uint32_t mbed_heap_size = (uint32_t)HEAP_SIZE;
+
+  tr_debug("\t mbed_heap_start: %p, mbed_heap_end: %p, size: %u", HEAP_START, (void*)(mbed_heap_start + mbed_heap_size), mbed_heap_size);
+  //tr_debug("\t mbed_stack_isr_start: %p, mbed_stack_isr_end: %p, size: %u", mbed_stack_isr_start, (mbed_stack_isr_start + mbed_stack_isr_size), mbed_stack_isr_size);
 }
 
 #endif
