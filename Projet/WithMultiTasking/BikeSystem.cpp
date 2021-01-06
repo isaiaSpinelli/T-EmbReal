@@ -13,7 +13,8 @@ BikeSystem::BikeSystem() :
   m_buttonDevice(callback(this, &BikeSystem::buttonFall), callback(this, &BikeSystem::buttonRise) ),
   m_gearSystemDevice(callback(this, &BikeSystem::setNewGear)),
   m_wheelCounterDevice(m_countQueue),
-  m_lcdDisplay(m_processedMail) {
+  m_lcdDisplay(m_processedMail),
+  m_sensorHub(m_sensorMail) {
 }
 
 void BikeSystem::buttonFall() {  
@@ -72,6 +73,9 @@ void BikeSystem::start() {
 
   // start the lcd display
   m_lcdDisplay.start();
+
+  // start the sensor hub
+  m_sensorHub.start();
   
   
   // start the processing thread
@@ -123,11 +127,17 @@ void BikeSystem::processData() {
       float averageSpeed = (float) (distance * 1000) / (float) (totalElapsedTimeInSecs * 3600);
       // printf("Bike Average speed is %d.%d\n", (int) averageSpeed, (int) ((averageSpeed - (int) averageSpeed) * 100000));
     
+
+      // Get data from sensors
+      SensorData* pSensorData = m_sensorMail.try_get_for(Kernel::wait_for_u32_forever);
+       
       // push the new processed data
       ProcessedData* pProcessedData = m_processedMail.try_alloc_for(Kernel::wait_for_u32_forever);
       pProcessedData->averageSpeed = averageSpeed;
       pProcessedData->averagePower = m_currentGear;
+      pProcessedData->sensorData = *pSensorData;
       m_processedMail.put(pProcessedData);
+      m_sensorMail.free(pSensorData);
     }
   }
 }

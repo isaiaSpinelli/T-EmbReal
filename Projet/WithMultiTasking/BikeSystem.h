@@ -1,10 +1,13 @@
 #pragma once
 
 #include "GearSystemDevice.h"
+#include "SensorData.h"
 #include "WheelCounterDevice.h"
 #include "ButtonDevice.h"
 #include "LCDDisplay.h"
 #include "ProcessedData.h"
+#include "SensorHub.h"
+#include "config.h"
 
 namespace with_multitasking {
 
@@ -33,12 +36,15 @@ private:
   ButtonDevice m_buttonDevice;
   // data member that represents the device display
   LCDDisplay m_lcdDisplay;
+  // data member that represent the Sensor Hub
+  SensorHub m_sensorHub;
   
   // used for performance measurements
   // wheel circumference in mm
   static const int WHEEL_CIRCUMFERENCE = 2200;
   Queue<int, COUNT_QUEUE_SIZE> m_countQueue;
   Mail<ProcessedData, PROCESSED_DATA_QUEUE_SIZE> m_processedMail;
+  Mail<SensorData,SENSOR_DATA_QUEUE_SIZE> m_sensorMail;
   volatile uint32_t m_totalRotationCount = 0;
   volatile uint32_t m_currentGear = 0;
   Thread m_processingThread;

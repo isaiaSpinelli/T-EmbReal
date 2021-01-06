@@ -4,6 +4,7 @@
 
 #include "config.h"
 #include "ProcessedData.h"
+#include "SensorData.h"
 
 namespace with_multitasking {
 
