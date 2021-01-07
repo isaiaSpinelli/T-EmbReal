@@ -54,6 +54,9 @@ private:
   std::chrono::microseconds m_timeButtonFall;
   std::chrono::microseconds m_timeButtonRise;
 
+  SensorData pSensorDataAverage = {0,0,0};
+  bool firstTimeEnvironementalValues = true;
+
 #if defined(MBED_ALL_STATS_ENABLED)
   static const int MAX_THREAD_INFO = 10;
   mbed_stats_heap_t m_heap_info = {0};  

@@ -24,7 +24,7 @@ void LCDDisplay::displayInfo() {
     SensorData sensorData = pProcessedData->sensorData;
     //printf("Average speed is %d.%d\n", (int) speed, (int) ((speed - (int) speed) * 100000));
     printf("03 Average speed is %f with power %f\n", speed, power);
-    printf("temp : %f, humidity : %f, pressure : %f",sensorData.temp, sensorData.humidity,sensorData.pressure);
+    printf("temp : %f, humidity : %f, pressure : %f\n\n",sensorData.temp, sensorData.humidity,sensorData.pressure);
     m_processedMail.free(pProcessedData);    
   }
 }

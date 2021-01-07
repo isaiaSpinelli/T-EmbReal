@@ -130,12 +130,23 @@ void BikeSystem::processData() {
 
       // Get data from sensors
       SensorData* pSensorData = m_sensorMail.try_get_for(Kernel::wait_for_u32_forever);
-       
+      if(firstTimeEnvironementalValues){
+          pSensorDataAverage.humidity = pSensorData->humidity; 
+          pSensorDataAverage.pressure = pSensorData->pressure;
+          pSensorDataAverage.temp = pSensorData->temp;
+          firstTimeEnvironementalValues = false;
+      }
+      else {
+          pSensorDataAverage.humidity = (pSensorDataAverage.humidity + pSensorData->humidity) / 2; 
+          pSensorDataAverage.pressure = (pSensorDataAverage.pressure + pSensorData->pressure) / 2;
+          pSensorDataAverage.temp = (pSensorDataAverage.temp + pSensorData->temp) / 2;
+      }
+
       // push the new processed data
       ProcessedData* pProcessedData = m_processedMail.try_alloc_for(Kernel::wait_for_u32_forever);
       pProcessedData->averageSpeed = averageSpeed;
       pProcessedData->averagePower = m_currentGear;
-      pProcessedData->sensorData = *pSensorData;
+      pProcessedData->sensorData = pSensorDataAverage;
       m_processedMail.put(pProcessedData);
       m_sensorMail.free(pSensorData);
     }
