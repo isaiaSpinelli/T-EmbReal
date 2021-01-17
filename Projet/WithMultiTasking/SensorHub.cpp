@@ -1,16 +1,18 @@
 #include "SensorHub.h"
 #include "DevI2C.h"
 #include "LPS22HBSensor.h"
+#include <cstdio>
 
 
 namespace with_multitasking {
   
 const std::chrono::microseconds SensorHub::PERIOD_MEASURE = 1000ms;
 
-SensorHub::SensorHub(Mail<SensorData, SENSOR_DATA_QUEUE_SIZE>& sensorMail) :
+SensorHub::SensorHub(Mail<SensorData, SENSOR_DATA_QUEUE_SIZE>& sensorMail, Mutex& externNewDataMutex) :
   m_thread(osPriorityNormal, OS_STACK_SIZE, nullptr, "SensorHub"),
   m_sensorMail(sensorMail),
-  newData(false){
+  newData(false),
+  m_externNewDataMutex(externNewDataMutex){
 }
 
 void SensorHub::start() {
@@ -35,18 +37,24 @@ void SensorHub::GetMeasureThread(){
      m_ticker.attach(callback(this, &SensorHub::GetMeasure), PERIOD_MEASURE);
      while(true)
      {
-        if(newData)
+        m_externNewDataMutex.lock();
+        if(newData || externNewData)
         {
             hum_temp->get_temperature(&m_temp);
             hum_temp->get_humidity(&m_humidity);
             press_temp->get_pressure(&m_pressure);
             SensorData* pSensorData = m_sensorMail.try_alloc();//_for(Kernel::wait_for_u32_forever);
-            pSensorData->temp = m_temp;
-            pSensorData->pressure = m_pressure;
-            pSensorData->humidity = m_humidity;
-            m_sensorMail.put(pSensorData);
+            if (pSensorData != nullptr)
+            {
+                pSensorData->temp = m_temp;
+                pSensorData->pressure = m_pressure;
+                pSensorData->humidity = m_humidity;
+                m_sensorMail.put(pSensorData);
+            }
             newData = false;
+            externNewData = false;
         }
+        m_externNewDataMutex.unlock();
      }
 }
 
@@ -55,6 +63,15 @@ void SensorHub::GetMeasure(){
     m_pressure = 3.;
     m_humidity = 5.1;*/
     newData = true;
+};
+
+void SensorHub::GetMeasureTemp(){
+    /*m_temp = 3.;
+    m_pressure = 3.;
+    m_humidity = 5.1;*/
+    m_externNewDataMutex.lock();
+    newData = true;
+    m_externNewDataMutex.unlock();
 };
 
 } // namespace

@@ -44,6 +44,7 @@ private:
   static const int WHEEL_CIRCUMFERENCE = 2200;
   Queue<int, COUNT_QUEUE_SIZE> m_countQueue;
   Mail<ProcessedData, PROCESSED_DATA_QUEUE_SIZE> m_processedMail;
+  Mutex m_externNewData;
   Mail<SensorData,SENSOR_DATA_QUEUE_SIZE> m_sensorMail;
   volatile uint32_t m_totalRotationCount = 0;
   volatile uint32_t m_currentGear = 0;

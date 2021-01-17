@@ -14,7 +14,7 @@ BikeSystem::BikeSystem() :
   m_gearSystemDevice(callback(this, &BikeSystem::setNewGear)),
   m_wheelCounterDevice(m_countQueue),
   m_lcdDisplay(m_processedMail),
-  m_sensorHub(m_sensorMail) {
+  m_sensorHub(m_sensorMail,m_externNewData) {
 }
 
 void BikeSystem::buttonFall() {  
@@ -29,7 +29,9 @@ void BikeSystem::displayTimeButton() {
     int timePushButton = ((m_timeButtonRise.count() - m_timeButtonFall.count())/1000);
     tr_debug("Button (event): push time is %d msecs", timePushButton ); 
     if (timePushButton < 1000){
-        // m_sensorHub.getMeasure();
+        m_externNewData.lock();
+        m_sensorHub.GetMeasureTemp();
+        m_externNewData.unlock();
     } else {
         // Print stack and heap info
         BikeSystem::printDiffs();

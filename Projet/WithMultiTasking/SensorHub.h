@@ -16,12 +16,13 @@ namespace with_multitasking {
 
 class SensorHub {
 public:
-  SensorHub(Mail<SensorData, SENSOR_DATA_QUEUE_SIZE>& sensorMail);
+  SensorHub(Mail<SensorData, SENSOR_DATA_QUEUE_SIZE>& sensorMail, Mutex& externNewDataMutex);
 
   void start();
   //Shouldn't this be private ? 
   void GetMeasureThread();
   void GetMeasure();
+  void GetMeasureTemp();
 
 private:
   // definition of task execution time
@@ -31,11 +32,13 @@ private:
   LowPowerTicker m_ticker;
   Thread m_thread;
   Mail<SensorData, SENSOR_DATA_QUEUE_SIZE>& m_sensorMail;
+  Mutex& m_externNewDataMutex;
   float m_temp = 0.0;
   float m_pressure = 0.0;
   float m_humidity = 0.0;
 
   bool newData;
+  bool externNewData;
 
   DevI2C* devI2c = new DevI2C(PB_11,PB_10);
   LPS22HBSensor* press_temp = new LPS22HBSensor(devI2c);

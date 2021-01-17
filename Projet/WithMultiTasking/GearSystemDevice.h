@@ -16,7 +16,7 @@ public:
   
 private:
   // data members
-  //USBSerial m_usbSerial;
+  USBSerial m_usbSerial;
 
   int m_currentGear = 0;
 };
