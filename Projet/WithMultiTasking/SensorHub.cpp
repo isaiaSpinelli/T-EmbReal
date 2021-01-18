@@ -16,12 +16,6 @@ SensorHub::SensorHub(Mail<SensorData, SENSOR_DATA_QUEUE_SIZE>& sensorMail, Mutex
 }
 
 void SensorHub::start() {
-  // initialize random seed
-  //srand (time(NULL));
-
-  // start a ticker for signaling a wheel rotation
-  //m_ticker.attach(callback(this, &SensorHub::GetMeasure), PERIOD_MEASURE);
-  
   // start a thread that will get atomspheric datas 
   m_thread.start(callback(this, &SensorHub::GetMeasureThread));
 
@@ -59,16 +53,10 @@ void SensorHub::GetMeasureThread(){
 }
 
 void SensorHub::GetMeasure(){
-    /*m_temp = 3.;
-    m_pressure = 3.;
-    m_humidity = 5.1;*/
     newData = true;
 };
 
 void SensorHub::GetMeasureTemp(){
-    /*m_temp = 3.;
-    m_pressure = 3.;
-    m_humidity = 5.1;*/
     m_externNewDataMutex.lock();
     newData = true;
     m_externNewDataMutex.unlock();

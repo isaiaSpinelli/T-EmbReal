@@ -38,24 +38,12 @@ void BikeSystem::displayTimeButton() {
     }
  }
 
-/*void BikeSystem::setReset() {  
-  m_resetTime = m_timer.elapsed_time();
-  // defer the job to the event queue
-  m_eventQueueForISRs.call(mbed::callback(this, &BikeSystem::performReset));
-}
-
-void BikeSystem::performReset() {
-  std::chrono::microseconds currentTime = m_timer.elapsed_time();
-  tr_debug("Reset task (event): response time is %d usecs", (int) (currentTime.count() - m_resetTime.count())); 
- 
-  core_util_atomic_store_u32(&m_totalRotationCount, 0);
-}*/
-
+// Not use (uart use for Bootloader)
 void BikeSystem::setNewGear() {
   // defer the job to the event queue
   m_eventQueueForISRs.call(mbed::callback(this, &BikeSystem::updateCurrentGear));
 }
-
+// Not use (uart use for Bootloader)
 void BikeSystem::updateCurrentGear() {
   // get the new gear 
   uint32_t gear = m_gearSystemDevice.getCurrentGear();
